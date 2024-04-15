@@ -9,7 +9,6 @@ def merge(arr_1, arr_2):
 
     i = j = 0
     for k in range(res_len):
-        print(i, j)
         if arr_1[i] < arr_2[j]:
             res_arr.append(arr_1[i])
             i += 1
