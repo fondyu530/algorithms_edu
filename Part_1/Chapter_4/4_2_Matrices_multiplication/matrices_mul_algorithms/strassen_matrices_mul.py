@@ -1,5 +1,5 @@
-from general_matrices_mul import multiply_matrices
-from utils import (
+from .general_matrices_mul import multiply_matrices
+from .utils import (
     print_matrix,
     sum_matrices,
     get_matrix_dims,

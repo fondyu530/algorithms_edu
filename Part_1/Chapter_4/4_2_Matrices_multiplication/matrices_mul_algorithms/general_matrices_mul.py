@@ -1,4 +1,4 @@
-from utils import initialize_empty_mat_mul_product, print_matrix
+from .utils import initialize_empty_mat_mul_product, print_matrix
 
 
 def multiply_matrices(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:

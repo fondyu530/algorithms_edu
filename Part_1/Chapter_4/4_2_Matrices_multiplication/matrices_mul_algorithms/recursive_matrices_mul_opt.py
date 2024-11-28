@@ -1,5 +1,5 @@
-from general_matrices_mul import multiply_matrices
-from utils import print_matrix, pad_matrix_with_zeros_to_square, initialize_empty_mat_mul_product
+from .general_matrices_mul import multiply_matrices
+from .utils import print_matrix, pad_matrix_with_zeros_to_square, initialize_empty_mat_mul_product
 
 
 def multiply_matrices_recursive_optimal(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:
