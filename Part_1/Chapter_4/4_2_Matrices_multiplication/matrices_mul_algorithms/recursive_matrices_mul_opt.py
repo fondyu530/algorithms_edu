@@ -1,11 +1,10 @@
-from matrices_multiplication import multiply_matrices
-from utils import print_matrix, pad_matrix_with_zeros, initialize_empty_mat_mul_product
+from matrices_mul import multiply_matrices
+from utils import print_matrix, pad_matrix_with_zeros_to_square, initialize_empty_mat_mul_product
 
 
 def multiply_matrices_recursive(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:
     c_res_rows_num, c_res_cols_num = len(a), len(b[0])
-    a = pad_matrix_with_zeros(a)
-    b = pad_matrix_with_zeros(b)
+    a, b = pad_matrix_with_zeros_to_square(a), pad_matrix_with_zeros_to_square(b)
     c = initialize_empty_mat_mul_product(a, b)
 
     def _multiply_matrices_recursive(
@@ -20,37 +19,39 @@ def multiply_matrices_recursive(a: list[list[float]], b: list[list[float]]) -> l
         if size == 1:
             c[row_a_ind][col_b_ind] += a[row_a_ind][col_a_ind] * b[row_b_ind][col_b_ind]
         else:
-            size //= 2
             a11_sub_matrix_indices, a12_sub_matrix_indices, a21_sub_matrix_indices, a22_sub_matrix_indices = (
-                divide_matrix(row_a_ind, col_a_ind, size)
+                get_indices_of_matrix_symmetric_2d_partition(row_a_ind, col_a_ind, size)
             )
             b11_sub_matrix_indices, b12_sub_matrix_indices, b21_sub_matrix_indices, b22_sub_matrix_indices = (
-                divide_matrix(row_b_ind, col_b_ind, size)
+                get_indices_of_matrix_symmetric_2d_partition(row_b_ind, col_b_ind, size)
             )
 
-            _multiply_matrices_recursive(*a11_sub_matrix_indices, *b11_sub_matrix_indices, size)
-            _multiply_matrices_recursive(*a12_sub_matrix_indices, *b21_sub_matrix_indices, size)
-            _multiply_matrices_recursive(*a11_sub_matrix_indices, *b12_sub_matrix_indices, size)
-            _multiply_matrices_recursive(*a12_sub_matrix_indices, *b22_sub_matrix_indices, size)
+            half_size = size // 2
 
-            _multiply_matrices_recursive(*a21_sub_matrix_indices, *b11_sub_matrix_indices, size)
-            _multiply_matrices_recursive(*a22_sub_matrix_indices, *b21_sub_matrix_indices, size)
-            _multiply_matrices_recursive(*a21_sub_matrix_indices, *b12_sub_matrix_indices, size)
-            _multiply_matrices_recursive(*a22_sub_matrix_indices, *b22_sub_matrix_indices, size)
+            _multiply_matrices_recursive(*a11_sub_matrix_indices, *b11_sub_matrix_indices, half_size)
+            _multiply_matrices_recursive(*a12_sub_matrix_indices, *b21_sub_matrix_indices, half_size)
+            _multiply_matrices_recursive(*a11_sub_matrix_indices, *b12_sub_matrix_indices, half_size)
+            _multiply_matrices_recursive(*a12_sub_matrix_indices, *b22_sub_matrix_indices, half_size)
+
+            _multiply_matrices_recursive(*a21_sub_matrix_indices, *b11_sub_matrix_indices, half_size)
+            _multiply_matrices_recursive(*a22_sub_matrix_indices, *b21_sub_matrix_indices, half_size)
+            _multiply_matrices_recursive(*a21_sub_matrix_indices, *b12_sub_matrix_indices, half_size)
+            _multiply_matrices_recursive(*a22_sub_matrix_indices, *b22_sub_matrix_indices, half_size)
 
     _multiply_matrices_recursive(row_a_ind=0, col_a_ind=0, row_b_ind=0, col_b_ind=0, size=len(c))
     return [[c[i][j] for j in range(c_res_cols_num)] for i in range(c_res_rows_num)]
 
 
-def divide_matrix(
+def get_indices_of_matrix_symmetric_2d_partition(
         row_ind: int,
         col_ind: int,
-        divided_size: int
+        initial_size: int
 ) -> ((int, int), (int, int), (int, int), (int, int)):
+    half_size = initial_size // 2
     sub_matrix_11_indices = (row_ind, col_ind)
-    sub_matrix_12_indices = (row_ind, col_ind + divided_size)
-    sub_matrix_21_indices = (row_ind + divided_size, col_ind)
-    sub_matrix_22_indices = (row_ind + divided_size, col_ind + divided_size)
+    sub_matrix_12_indices = (row_ind, col_ind + half_size)
+    sub_matrix_21_indices = (row_ind + half_size, col_ind)
+    sub_matrix_22_indices = (row_ind + half_size, col_ind + half_size)
 
     return sub_matrix_11_indices, sub_matrix_12_indices, sub_matrix_21_indices, sub_matrix_22_indices
 
