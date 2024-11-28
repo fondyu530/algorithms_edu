@@ -27,8 +27,10 @@ def multiply_matrices_recursive(a: list[list[float]], b: list[list[float]]) -> l
             assign_sub_matrix(
                 m=_c,
                 m_sub=sum_matrices(
-                    _multiply_matrices_recursive(a11, b11),
-                    _multiply_matrices_recursive(a12, b21)
+                    [
+                        _multiply_matrices_recursive(a11, b11),
+                        _multiply_matrices_recursive(a12, b21)
+                    ]
                 ),
                 start_row_ind=0,
                 start_col_ind=0
@@ -36,8 +38,10 @@ def multiply_matrices_recursive(a: list[list[float]], b: list[list[float]]) -> l
             assign_sub_matrix(
                 m=_c,
                 m_sub=sum_matrices(
-                    _multiply_matrices_recursive(a11, b12),
-                    _multiply_matrices_recursive(a12, b22)
+                    [
+                        _multiply_matrices_recursive(a11, b12),
+                        _multiply_matrices_recursive(a12, b22)
+                    ]
                 ),
                 start_row_ind=0,
                 start_col_ind=half_size
@@ -45,8 +49,10 @@ def multiply_matrices_recursive(a: list[list[float]], b: list[list[float]]) -> l
             assign_sub_matrix(
                 m=_c,
                 m_sub=sum_matrices(
-                    _multiply_matrices_recursive(a21, b11),
-                    _multiply_matrices_recursive(a22, b21)
+                    [
+                        _multiply_matrices_recursive(a21, b11),
+                        _multiply_matrices_recursive(a22, b21)
+                    ]
                 ),
                 start_row_ind=half_size,
                 start_col_ind=0
@@ -54,8 +60,10 @@ def multiply_matrices_recursive(a: list[list[float]], b: list[list[float]]) -> l
             assign_sub_matrix(
                 m=_c,
                 m_sub=sum_matrices(
-                    _multiply_matrices_recursive(a21, b12),
-                    _multiply_matrices_recursive(a22, b22)
+                    [
+                        _multiply_matrices_recursive(a21, b12),
+                        _multiply_matrices_recursive(a22, b22)
+                    ]
                 ),
                 start_row_ind=half_size,
                 start_col_ind=half_size

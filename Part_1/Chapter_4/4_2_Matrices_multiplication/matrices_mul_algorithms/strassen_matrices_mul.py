@@ -8,11 +8,11 @@ from utils import (
 )
 
 
-def multiply_matrices_recursive(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:
+def multiply_matrices_strassen(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:
     c_res_rows_num, c_res_cols_num = len(a), len(b[0])
     a, b = pad_matrix_with_zeros_to_square(a), pad_matrix_with_zeros_to_square(b)
 
-    def _multiply_matrices_recursive(_a: list[list[float]], _b: list[list[float]]) -> list[list[float]]:
+    def _multiply_matrices_strassen(_a: list[list[float]], _b: list[list[float]]) -> list[list[float]]:
         size = len(_a)
         _c = [[0 for _ in range(size)] for _ in range(size)]
 
@@ -24,45 +24,62 @@ def multiply_matrices_recursive(a: list[list[float]], b: list[list[float]]) -> l
 
             half_size = size // 2
 
+            p1 = _multiply_matrices_strassen(
+                a11,
+                sum_matrices(matrices=[b12, b22], multipliers=[1, -1])
+            )
+            p2 = _multiply_matrices_strassen(
+                sum_matrices(matrices=[a11, a12]),
+                b22
+            )
+            p3 = _multiply_matrices_strassen(
+                sum_matrices(matrices=[a21, a22]),
+                b11
+            )
+            p4 = _multiply_matrices_strassen(
+                a22,
+                sum_matrices(matrices=[b21, b11], multipliers=[1, -1])
+            )
+            p5 = _multiply_matrices_strassen(
+                sum_matrices(matrices=[a11, a22]),
+                sum_matrices(matrices=[b11, b22])
+            )
+            p6 = _multiply_matrices_strassen(
+                sum_matrices(matrices=[a12, a22], multipliers=[1, -1]),
+                sum_matrices(matrices=[b21, b22])
+            )
+            p7 = _multiply_matrices_strassen(
+                sum_matrices(matrices=[a11, a21], multipliers=[1, -1]),
+                sum_matrices(matrices=[b11, b12])
+            )
+
             assign_sub_matrix(
                 m=_c,
-                m_sub=sum_matrices(
-                    _multiply_matrices_recursive(a11, b11),
-                    _multiply_matrices_recursive(a12, b21)
-                ),
+                m_sub=sum_matrices(matrices=[p5, p4, p2, p6], multipliers=[1, 1, -1, 1]),
                 start_row_ind=0,
                 start_col_ind=0
             )
             assign_sub_matrix(
                 m=_c,
-                m_sub=sum_matrices(
-                    _multiply_matrices_recursive(a11, b12),
-                    _multiply_matrices_recursive(a12, b22)
-                ),
+                m_sub=sum_matrices(matrices=[p1, p2]),
                 start_row_ind=0,
                 start_col_ind=half_size
             )
             assign_sub_matrix(
                 m=_c,
-                m_sub=sum_matrices(
-                    _multiply_matrices_recursive(a21, b11),
-                    _multiply_matrices_recursive(a22, b21)
-                ),
+                m_sub=sum_matrices(matrices=[p3, p4]),
                 start_row_ind=half_size,
                 start_col_ind=0
             )
             assign_sub_matrix(
                 m=_c,
-                m_sub=sum_matrices(
-                    _multiply_matrices_recursive(a21, b12),
-                    _multiply_matrices_recursive(a22, b22)
-                ),
+                m_sub=sum_matrices(matrices=[p5, p1, p3, p7], multipliers=[1, 1, -1, -1]),
                 start_row_ind=half_size,
                 start_col_ind=half_size
             )
         return _c
 
-    c_res = _multiply_matrices_recursive(a, b)
+    c_res = _multiply_matrices_strassen(a, b)
     return [[c_res[i][j] for j in range(c_res_cols_num)] for i in range(c_res_rows_num)]
 
 
@@ -101,6 +118,6 @@ if __name__ == '__main__':
     print('General mul function:')
     print_matrix(C)
 
-    C = multiply_matrices_recursive(A, B)
+    C = multiply_matrices_strassen(A, B)
     print('Recursive mul function:')
     print_matrix(C)

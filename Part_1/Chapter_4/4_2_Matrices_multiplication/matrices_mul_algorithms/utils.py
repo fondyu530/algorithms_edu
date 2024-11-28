@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 def print_matrix(m: list[list[float]]) -> None:
     for i in range(len(m)):
         for j in range(len(m[0])):
@@ -33,13 +36,21 @@ def get_product_of_matrix_symmetric_2d_partition(
     return m11, m12, m21, m22
 
 
-def sum_matrices(a: list[list[float]], b: list[list[float]], a_mul: int = 1, b_mul: int = 1) -> list[list[float]]:
-    a_dims, b_dims = get_matrix_dims(a), get_matrix_dims(b)
-    if a_dims != b_dims:
+def sum_matrices(matrices: list[list[list[float]]], multipliers: Optional[list[float]] = None) -> list[list[float]]:
+    matrices_dims = list(map(lambda x: get_matrix_dims(x), matrices))
+    if len(set(matrices_dims)) > 1:
         raise Exception(
-            f'Invalid matrices dimensions! Both matrices should have equal dimensions. Given: {a_dims}, {b_dims}'
+            f'Invalid matrices dimensions! All matrices should have equal dimensions. Given: {matrices_dims}'
         )
-    return [[a_mul * a[i][j] + b_mul * b[i][j] for j in range(a_dims[1])] for i in range(a_dims[0])]
+    rows_num, cols_num = matrices_dims[0][0], matrices_dims[0][1]
+    res_matrix = [[0 for _ in range(cols_num)] for _ in range(rows_num)]
+    multipliers = multipliers or [1 for _ in matrices]
+
+    for matrix, multiplier in zip(matrices, multipliers):
+        for i in range(rows_num):
+            for j in range(cols_num):
+                res_matrix[i][j] += matrix[i][j] * multiplier
+    return res_matrix
 
 
 def pad_matrix_with_zeros_to_square(m: list[list[float]]) -> list[list[float]]:
