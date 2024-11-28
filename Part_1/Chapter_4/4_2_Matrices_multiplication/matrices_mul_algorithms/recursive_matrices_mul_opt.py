@@ -1,4 +1,4 @@
-from matrices_mul import multiply_matrices
+from general_matrices_mul import multiply_matrices
 from utils import print_matrix, pad_matrix_with_zeros_to_square, initialize_empty_mat_mul_product
 
 
