@@ -1,8 +1,10 @@
-from .general_matrices_mul import multiply_matrices
-from .utils import print_matrix, pad_matrix_with_zeros_to_square, initialize_empty_mat_mul_product
+import numpy as np
+
+from general_matrices_mul import multiply_matrices
+from utils import print_matrix, pad_matrix_with_zeros_to_square, initialize_empty_mat_mul_product
 
 
-def multiply_matrices_recursive_optimal(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:
+def multiply_matrices_recursive_optimal(a: np.array, b: np.array) -> np.array:
     c_res_rows_num, c_res_cols_num = len(a), len(b[0])
     a, b = pad_matrix_with_zeros_to_square(a), pad_matrix_with_zeros_to_square(b)
     c = initialize_empty_mat_mul_product(a, b)
@@ -39,7 +41,7 @@ def multiply_matrices_recursive_optimal(a: list[list[float]], b: list[list[float
             _multiply_matrices_recursive_optimal(*a22_sub_matrix_indices, *b22_sub_matrix_indices, half_size)
 
     _multiply_matrices_recursive_optimal(row_a_ind=0, col_a_ind=0, row_b_ind=0, col_b_ind=0, size=len(c))
-    return [[c[i][j] for j in range(c_res_cols_num)] for i in range(c_res_rows_num)]
+    return c[:c_res_rows_num, :c_res_cols_num]
 
 
 def get_indices_of_matrix_symmetric_2d_partition(
@@ -57,24 +59,24 @@ def get_indices_of_matrix_symmetric_2d_partition(
 
 
 if __name__ == '__main__':
-    A = [
-        [1, 1, 1, 1, 1],
-        [2, 2, 2, 2, 2],
-        [3, 3, 3, 3, 3],
-        [4, 4, 4, 4, 4],
-        [5, 5, 5, 5, 5],
-        [6, 6, 6, 6, 6],
-        [7, 7, 7, 7, 7]
-    ]
-
-    B = [
-        [5, 5, 5, 5, 5],
-        [4, 4, 4, 4, 4],
-        [3, 3, 3, 3, 3],
-        [2, 2, 2, 2, 2],
-        [1, 1, 1, 1, 1]
-    ]
-
+    A = np.array(
+        [
+            [1, 1, 1, 1, 1],
+            [2, 2, 2, 2, 2],
+            [3, 3, 3, 3, 3],
+            [4, 4, 4, 4, 4],
+            [5, 5, 5, 5, 5]
+        ]
+    )
+    B = np.array(
+        [
+            [5, 5, 5, 5],
+            [4, 4, 4, 4],
+            [3, 3, 3, 3],
+            [2, 2, 2, 2],
+            [1, 1, 1, 1]
+        ]
+    )
     C = multiply_matrices(A, B)
     print('General mul function:')
     print_matrix(C)

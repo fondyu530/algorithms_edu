@@ -1,7 +1,8 @@
-from .utils import initialize_empty_mat_mul_product, print_matrix
+import numpy as np
+from utils import initialize_empty_mat_mul_product, print_matrix
 
 
-def multiply_matrices(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:
+def multiply_matrices(a: np.array, b: np.array) -> np.array:
     c = initialize_empty_mat_mul_product(a, b)
 
     for i in range(len(c)):
@@ -12,21 +13,23 @@ def multiply_matrices(a: list[list[float]], b: list[list[float]]) -> list[list[f
 
 
 if __name__ == '__main__':
-    A = [
-        [1, 1, 1, 1, 1],
-        [2, 2, 2, 2, 2],
-        [3, 3, 3, 3, 3],
-        [4, 4, 4, 4, 4],
-        [5, 5, 5, 5, 5]
-    ]
-
-    B = [
-        [5, 5, 5, 5],
-        [4, 4, 4, 4],
-        [3, 3, 3, 3],
-        [2, 2, 2, 2],
-        [1, 1, 1, 1]
-    ]
-
+    A = np.array(
+        [
+            [1, 1, 1, 1, 1],
+            [2, 2, 2, 2, 2],
+            [3, 3, 3, 3, 3],
+            [4, 4, 4, 4, 4],
+            [5, 5, 5, 5, 5]
+        ]
+    )
+    B = np.array(
+        [
+            [5, 5, 5, 5],
+            [4, 4, 4, 4],
+            [3, 3, 3, 3],
+            [2, 2, 2, 2],
+            [1, 1, 1, 1]
+        ]
+    )
     C = multiply_matrices(A, B)
     print_matrix(C)
