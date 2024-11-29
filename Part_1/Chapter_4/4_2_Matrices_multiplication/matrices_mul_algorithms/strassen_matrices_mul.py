@@ -1,11 +1,5 @@
 import numpy as np
-
-from general_matrices_mul import multiply_matrices
-from utils import (
-    print_matrix,
-    pad_matrix_with_zeros_to_square,
-    get_product_of_matrix_symmetric_2d_partition
-)
+from .utils import print_matrix, pad_matrix_with_zeros_to_square, get_product_of_matrix_symmetric_2d_partition
 
 
 def multiply_matrices_strassen(a: np.array, b: np.array) -> np.array:
@@ -14,10 +8,8 @@ def multiply_matrices_strassen(a: np.array, b: np.array) -> np.array:
 
     def _multiply_matrices_strassen(_a: np.array, _b: np.array) -> np.array:
         size = len(_a)
-        _c = np.zeros((size, size))
-
         if size == 1:
-            _c[0][0] = _a[0][0] * _b[0][0]
+            _c = _a * _b
         else:
             a11, a12, a21, a22 = get_product_of_matrix_symmetric_2d_partition(_a)
             b11, b12, b21, b22 = get_product_of_matrix_symmetric_2d_partition(_b)
@@ -32,24 +24,15 @@ def multiply_matrices_strassen(a: np.array, b: np.array) -> np.array:
             p6 = _multiply_matrices_strassen(a12 - a22, b21 + b22)
             p7 = _multiply_matrices_strassen(a11 - a21, b11 + b12)
 
-            assign_sub_matrix(m=_c, m_sub=p5 + p4 - p2 + p6, start_row_ind=0, start_col_ind=0)
-            assign_sub_matrix(m=_c, m_sub=p1 + p2, start_row_ind=0, start_col_ind=half_size)
-            assign_sub_matrix(m=_c, m_sub=p3 + p4, start_row_ind=half_size, start_col_ind=0)
-            assign_sub_matrix(m=_c, m_sub=p5 + p1 - p3 -p7, start_row_ind=half_size, start_col_ind=half_size)
+            _c = np.zeros((size, size))
+            _c[:half_size, :half_size] = p5 + p4 - p2 + p6
+            _c[:half_size, half_size:] = p1 + p2
+            _c[half_size:, :half_size] = p3 + p4
+            _c[half_size:, half_size:] = p5 + p1 - p3 - p7
         return _c
+
     c_res = _multiply_matrices_strassen(a, b)
     return c_res[:c_res_rows_num, :c_res_cols_num]
-
-
-def assign_sub_matrix(
-        m: np.array,
-        m_sub: np.array,
-        start_row_ind: int = 0,
-        start_col_ind: int = 0
-) -> None:
-    for i in range(m_sub.shape[0]):
-        for j in range(m_sub.shape[1]):
-            m[start_row_ind+i][start_col_ind+j] = m_sub[i][j]
 
 
 if __name__ == '__main__':
@@ -72,10 +55,13 @@ if __name__ == '__main__':
         ]
     )
 
-    C = multiply_matrices(A, B)
-    print('General mul function:')
-    print_matrix(C)
+    C_np = A @ B
+    print('Numpy mul function:')
+    print_matrix(C_np)
 
     C = multiply_matrices_strassen(A, B)
-    print('Recursive mul function:')
+    print('Strassen mul function:')
     print_matrix(C)
+
+    matrices_equality = np.all(C_np == C)
+    print(f'Matrices equality: {matrices_equality}')

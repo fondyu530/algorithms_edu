@@ -1,5 +1,5 @@
 import numpy as np
-from utils import initialize_empty_mat_mul_product, print_matrix
+from .utils import initialize_empty_mat_mul_product, print_matrix
 
 
 def multiply_matrices(a: np.array, b: np.array) -> np.array:
@@ -31,5 +31,14 @@ if __name__ == '__main__':
             [1, 1, 1, 1]
         ]
     )
+
+    C_np = A @ B
+    print('Numpy mul function:')
+    print_matrix(C_np)
+
     C = multiply_matrices(A, B)
+    print('General mul function:')
     print_matrix(C)
+
+    matrices_equality = np.all(C_np == C)
+    print(f'Mareices equality: {matrices_equality}')

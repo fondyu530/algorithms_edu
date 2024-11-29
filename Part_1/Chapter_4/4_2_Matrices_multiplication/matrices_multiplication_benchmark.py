@@ -1,9 +1,8 @@
 import time
-
+import numpy as np
 import pandas as pd
 import plotly.express as px
 
-from random import randint
 from matrices_mul_algorithms import (
     multiply_matrices,
     multiply_matrices_strassen,
@@ -12,12 +11,9 @@ from matrices_mul_algorithms import (
 )
 
 
-def generate_random_matrix(rows_num: int, cols_num: int) -> list[list[float]]:
-    return [[randint(a=1, b=10) for _ in range(cols_num)] for _ in range(rows_num)]
-
-
 if __name__ == '__main__':
     mat_mul_functions = {
+        'numpy': np.matmul,
         'general': multiply_matrices,
         'strassen': multiply_matrices_strassen,
         'recursive': multiply_matrices_recursive,
@@ -25,12 +21,12 @@ if __name__ == '__main__':
     }
 
     df = pd.DataFrame()
-    for power in range(7):
+    for power in range(8):
         matrix_size = 2 << power
         print(f'Current matrix size: {matrix_size}')
 
-        A = generate_random_matrix(matrix_size, matrix_size)
-        B = generate_random_matrix(matrix_size, matrix_size)
+        A = np.random.randint(low=10, size=(matrix_size, matrix_size))
+        B = np.random.randint(low=10, size=(matrix_size, matrix_size))
 
         for algorithm, mat_mul_func in mat_mul_functions.items():
             print(f'Current algorithm: {algorithm}')
@@ -38,6 +34,7 @@ if __name__ == '__main__':
             C = mat_mul_func(A, B)
             toc = time.time()
 
+            print(f'Result is correct: {np.all(C == A @ B)}')
             tmp_df = pd.DataFrame(
                 {
                     'algorithm': [algorithm],

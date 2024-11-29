@@ -1,7 +1,5 @@
 import numpy as np
-
-from general_matrices_mul import multiply_matrices
-from utils import print_matrix, pad_matrix_with_zeros_to_square, initialize_empty_mat_mul_product
+from .utils import print_matrix, pad_matrix_with_zeros_to_square, initialize_empty_mat_mul_product
 
 
 def multiply_matrices_recursive_optimal(a: np.array, b: np.array) -> np.array:
@@ -77,10 +75,14 @@ if __name__ == '__main__':
             [1, 1, 1, 1]
         ]
     )
-    C = multiply_matrices(A, B)
-    print('General mul function:')
-    print_matrix(C)
+
+    C_np = A @ B
+    print('Numpy mul function:')
+    print_matrix(C_np)
 
     C = multiply_matrices_recursive_optimal(A, B)
-    print('Recursive mul function:')
+    print('Recursive optimal mul function:')
     print_matrix(C)
+
+    matrices_equality = np.all(C_np == C)
+    print(f'Matrices equality: {matrices_equality}')
