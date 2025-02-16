@@ -16,12 +16,12 @@ if __name__ == '__main__':
         'numpy': np.matmul,
         'general': multiply_matrices,
         'strassen': multiply_matrices_strassen,
-        'recursive': multiply_matrices_recursive,
-        'recursive_opt': multiply_matrices_recursive_optimal
+        'recursive_opt': multiply_matrices_recursive_optimal,
+        # 'recursive': multiply_matrices_recursive
     }
 
     df = pd.DataFrame()
-    for power in range(8):
+    for power in range(9):
         matrix_size = 2 << power
         print(f'Current matrix size: {matrix_size}')
 
