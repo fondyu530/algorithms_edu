@@ -1,4 +1,4 @@
-class Heap:
+class MaxHeap:
 
     def __init__(self):
         self.heap_arr = []
@@ -52,7 +52,7 @@ class Heap:
 
 if __name__ == '__main__':
     test_arr = [5, 3, 17, 10, 84, 19, 6, 22, 9]
-    heap = Heap()
+    heap = MaxHeap()
     heap.build_max_heap_from_array(test_arr)
     heap.heapsort()
     print(heap.heap_arr)
